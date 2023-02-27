@@ -1,8 +1,7 @@
 # The Graph Hosted Priv Customer
 
  1. [Description](#description)
- 2. [New user](#new-user)
- 3. [Subgraph Deployment](#subgraph-deployment)
+ 2. [Subgraph Deployment](#subgraph-deployment)
 
 ## [Description](#the-graph-hosted-priv-doc)
 
