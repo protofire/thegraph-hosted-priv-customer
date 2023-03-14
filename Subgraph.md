@@ -38,6 +38,10 @@ Please follow the above steps:
  
  Created subgraph: <CUSTOMER_NAME>/<SUBGRAPH_NAME>
  ```
+ > Note: On graph-cli version 0.42.1 and above you only need to set the _--node_ flag
+ ```bash
+ graph create <CUSTOMER_NAME>/<SUBGRAPH_NAME> --node https://<USERNAME>:<PASSWORD>@index.hosted.protofire-thegraph.com
+ ```
 
  2. Graph Deploy
  ```bash
@@ -75,3 +79,11 @@ Once you have created and deployed your subgraph you can see the ***Indexing Sta
 Using the same credentials (Username & Password) you previously received you can access Grafana portal in the following URL:
 
 https://grafana.hosted.protofire-thegraph.com
+
+You can also check the logs for your subgraph, filtering it by the subgraphID
+
+```bash
+curl -u "USERNAME:PASSWORD" -XGET "https://kibana.hosted.protofire-thegraph.com/subgraph-logs/_search" -H 'Content-Type: application/json' -d '{"query": {"match_phrase": {"subgraphId": "SUBGRAPHID"}}}' 2>null | jq .
+```
+
+> **_NOTE_**: You can get the ***SUBGRAPHID*** from the _Indexing status_ panel in the grafana dashboard.
