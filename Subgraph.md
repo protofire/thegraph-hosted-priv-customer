@@ -47,11 +47,11 @@ Please follow the above steps:
 
  2. Depending on your subgraph code you may also need to run:
  
-    yarn install
+    ```yarn install ```
    
-    yarn codegen
+    ```yarn codegen ```
    
-    yarn build
+    ```yarn build ```
 
  3. Graph Deploy
     
