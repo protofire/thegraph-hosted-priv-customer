@@ -32,6 +32,8 @@ Once you have received your credentials you'll be able to deploy your subgraph i
 
 Please follow the above steps:
 
+ > **_NOTE_**: Please create and deploy your subgraph following the pattern `<CUSTOMER_NAME>/<SUBGRAPH_NAME>` as this will be used in the customized grafana dashboard.
+
  1. Graph Create
  ```bash
  graph create <CUSTOMER_NAME>/<SUBGRAPH_NAME> --version-label <CUSTOMER_NAME>/<SUBGRAPH_NAME> --headers "{\"Authorization\": \"Basic <BASIC_AUTH>\"}" --ipfs https://ipfs.hosted.protofire-thegraph.com --node https://<USERNAME>:<PASSWORD>@index.hosted.protofire-thegraph.com
@@ -43,21 +45,20 @@ Please follow the above steps:
  graph create <CUSTOMER_NAME>/<SUBGRAPH_NAME> --node https://<USERNAME>:<PASSWORD>@index.hosted.protofire-thegraph.com
  ```
 
- 2. Graph Deploy
+ 2. Depending on your subgraph code you may also need to run:
+ 
+   yarn install
+   
+   yarn codegen
+   
+   yarn build
+
+ 3. Graph Deploy
+    
  ```bash
  graph deploy <CUSTOMER_NAME>/<SUBGRAPH_NAME> --version-label <CUSTOMER_NAME>/<SUBGRAPH_NAME> --headers "{\"Authorization\": \"Basic <BASIC_AUTH>\"}" --ipfs https://ipfs.hosted.protofire-thegraph.com --node https://<USERNAME>:<PASSWORD>@index.hosted.protofire-thegraph.com
  ```
- 
- > **_NOTE_**: Please create and deploy your subgraph following the pattern `<CUSTOMER_NAME>/<SUBGRAPH_NAME>` as this will be used in the customized grafana dashboard.
- 
- > **_NOTE_**: Depending on your subgraph code you may also need to run:
- >  
- >  yarn install
- >
- >  yarn codegen
- >
- >  yarn build
- >  
+
 
 ### [Automatically](#deployment)
 
