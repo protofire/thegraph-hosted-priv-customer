@@ -65,6 +65,8 @@ Please follow the above steps:
 
 You can use the workflow template with all the basic steps to deploy your subgraph automatically.
 
+You can find the template [here](./subgraph-deploy.yaml)
+
 You need to copy the workflow to your subgraph repository and run it manually. The pipeline will ask you the following input data:
 
  - Username

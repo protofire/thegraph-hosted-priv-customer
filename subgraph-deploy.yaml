@@ -1,0 +1,118 @@
+name: '[PRIV] - Build and Deploy Subgraph'
+
+on:
+  workflow_dispatch:
+    inputs:
+      Username:
+        description: 'Username for authentication'
+        required: true
+        type: string
+      Password:
+        description: 'Password for authentication'
+        required: true
+        type: string
+      Basic_Auth:
+        description: 'Basic Authentication'
+        required: true
+        type: string
+      Subgraph_Name:
+        description: 'Name of the subgraph to deploy with the pattern <CUSTOMER_NAME>/<SUBGRAPH_NAME>'
+        required: true
+        type: string
+      Repository:
+        description: 'Subgraph repository in format {owner}/{repo}.'
+        required: true
+        type: string
+      Branch:
+        description: 'Subgraph repository branch'
+        required: true
+        type: string
+        default: main
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    
+    env:
+      #Endpoints
+      INDEXNODE_ENDPOINT: 'index.hosted.protofire-thegraph.com'
+      QUERY_ENDPOINT: 'query.hosted.protofire-thegraph.com'
+      IPFS_ENDPOINT: 'ipfs.hosted.protofire-thegraph.com'
+
+      #Credentials
+      USERNAME: ${{ github.event.inputs.Username }}
+      PASSWORD: ${{ github.event.inputs.Password }}
+      BASIC_AUTH: ${{ github.event.inputs.Basic_Auth }}
+
+      #Subgraph
+      SUBGRAPH_NAME: ${{ github.event.inputs.Subgraph_Name }}
+      REPOSITORY: ${{ github.event.inputs.Repository }}
+      BRANCH: ${{ github.event.inputs.Branch }}
+
+      # AWS
+      AWS_REGION: us-east-2
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      #- name: Check out Git repository
+      #  uses: actions/checkout@v2
+
+      - name: Clone subgraph repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ env.REPOSITORY }}
+          path: ./subgraph
+          ref: ${{ env.BRANCH }}      
+
+      - name: Install graph-cli
+        run: yarn global add @graphprotocol/graph-cli@v0.51.1
+
+      - name: Subgraph - Install dependencies
+        run: yarn install
+        working-directory: subgraph/
+
+      - name: Subgraph - Codegen
+        run: yarn codegen
+        working-directory: subgraph/
+
+      - name: Subgraph - Build
+        run: yarn build
+        working-directory: subgraph/
+      
+      #- name: Subgraph - Test
+      #  run: yarn test
+      #  working-directory: subgraph/
+
+      - name: Subgraph - Graph create
+        run: |
+          graph create ${{ env.SUBGRAPH_NAME }} --node "https://${{ env.USERNAME }}:${{ env.PASSWORD }}@${{ env.INDEXNODE_ENDPOINT }}"                     
+        working-directory: subgraph/
+
+      - name: Subgraph - Graph deploy
+        run: |
+          graph deploy ${{ env.SUBGRAPH_NAME }} \
+                       --version-label ${{ env.SUBGRAPH_NAME }} \
+                       --headers "{\"Authorization\": \"Basic ${{ env.BASIC_AUTH }}\"}" \
+                       --ipfs "https://${{ env.IPFS_ENDPOINT }}" \
+                       --node "https://${{ env.USERNAME }}:${{ env.PASSWORD }}@${{ env.INDEXNODE_ENDPOINT }}"
+        working-directory: subgraph/
+
+      - name: Send notification to slack
+        run: |
+          body=$(cat  << EOF
+          {
+          	"blocks": [
+          		{
+          			"type": "section",
+          			"text": {
+          				"type": "mrkdwn",
+          				"text": "New subgraph created\n>*_'$SUBGRAPH_NAME'_*\n>Subgraph is synchronizing\n"
+          			}
+          		}
+          	]
+          }
+          EOF
+          )
+          curl -H "Content-Type: application/json" -X POST -d "$body" $SLACK_WEBHOOK_URL
