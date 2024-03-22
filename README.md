@@ -1,12 +1,12 @@
 # The Graph Hosted Priv Customer
 
- 1. [Description](#description)
- 2. [Subgraph Deployment](#subgraph-deployment)
+1. [Description](#description)
+2. [Deployment](#deployment)
 
-## [Description](#the-graph-hosted-priv-doc)
+## Description
 
- This repository contains documentation to deploy subgraphs to the ***TheGraph-Hosted*** infrastructure.
+This repository contains documentation to deploy subgraphs to the ***TheGraph-Hosted*** infrastructure.
 
-## [Subgraph Deployment](#the-graph-hosted-priv-doc)
+## Deployment
 
- For information about subgraph deployment, please see [Subgraph](Subgraph.md).
+For information about subgraph deployment, please see [USAGE](USAGE.md).
